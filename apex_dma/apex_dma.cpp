@@ -590,7 +590,7 @@ static void set_vars(uint64_t add_addr)
 	uint32_t check = 0;
 	client_mem.Read<uint32_t>(check_addr, check);
 	
-	if(check != 0xABCD)
+	if(check != 0xABBA)
 	{
 		printf("Incorrect values read. Check if the add_off is correct. Quitting.\n");
 		active = false;
