@@ -125,11 +125,6 @@ Vector Entity::getBonePosition(int id)
 	return bone;
 }
 
-float Entity::lastCrossHairTime()
-{
-	return *(float*)(buffer + OFFSET_CROSSHAIR_LAST);
-}
-
 //https://www.unknowncheats.me/forum/apex-legends/496984-getting-hitbox-positions-cstudiohdr-externally.html
 //https://www.unknowncheats.me/forum/3499185-post1334.html
 //https://www.unknowncheats.me/forum/3562047-post11000.html
@@ -211,8 +206,10 @@ void Entity::enableGlow()
 {
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_T1, 16256);
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_T2, 1193322764);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 7);
+	// apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 7);
+	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 1);
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
+	apex_mem.Write<int>(ptr + OFF_GLOW_FIX, 2);
 }
 
 void Entity::disableGlow()
@@ -266,17 +263,12 @@ bool Item::isGlowing()
 
 void Item::enableGlow()
 {
-	// apex_mem.Write<int>(ptr + OFFSET_ITEM_GLOW, 1363184265);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 6);
-    apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 2, 6);
+	apex_mem.Write<int>(ptr + OFFSET_ITEM_GLOW, 1363184265);
 }
 
 void Item::disableGlow()
 {
-	// apex_mem.Write<int>(ptr + OFFSET_ITEM_GLOW, 1411417991);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 0);
-    apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 0, 0);
-    apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE , 5);
+	apex_mem.Write<int>(ptr + OFFSET_ITEM_GLOW, 1411417991);
 }
 
 Vector Item::getPosition()
