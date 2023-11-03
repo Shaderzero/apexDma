@@ -90,6 +90,43 @@ bool isPressed(uint32_t button_code)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+bool IsInCrossHair(Entity &target)
+{
+	static uintptr_t last_t = 0;
+	static float last_crosshair_target_time = -1.f;
+	float now_crosshair_target_time = target.lastCrossHairTime();
+	bool is_trigger = false;
+	if (last_t == target.ptr)
+	{
+		if(last_crosshair_target_time != -1.f)
+		{
+			if(now_crosshair_target_time > last_crosshair_target_time)
+			{
+				is_trigger = true;
+				//printf("Trigger\n");
+				last_crosshair_target_time = -1.f;
+			}
+			else
+			{
+				is_trigger = false;
+				last_crosshair_target_time = now_crosshair_target_time;
+			}
+		}
+		else
+		{
+			is_trigger = false;
+			last_crosshair_target_time = now_crosshair_target_time;
+		}
+	}
+	else
+	{
+		last_t = target.ptr;
+		last_crosshair_target_time = -1.f;
+	}
+	return is_trigger;
+}
+
 void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int index)
 {
 	int entity_team = target.getTeamId();
@@ -335,42 +372,6 @@ void DoActions()
 // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 player players[toRead];
-
-bool IsInCrossHair(Entity &target)
-{
-	static uintptr_t last_t = 0;
-	static float last_crosshair_target_time = -1.f;
-	float now_crosshair_target_time = target.lastCrossHairTime();
-	bool is_trigger = false;
-	if (last_t == target.ptr)
-	{
-		if(last_crosshair_target_time != -1.f)
-		{
-			if(now_crosshair_target_time > last_crosshair_target_time)
-			{
-				is_trigger = true;
-				//printf("Trigger\n");
-				last_crosshair_target_time = -1.f;
-			}
-			else
-			{
-				is_trigger = false;
-				last_crosshair_target_time = now_crosshair_target_time;
-			}
-		}
-		else
-		{
-			is_trigger = false;
-			last_crosshair_target_time = now_crosshair_target_time;
-		}
-	}
-	else
-	{
-		last_t = target.ptr;
-		last_crosshair_target_time = -1.f;
-	}
-	return is_trigger;
-}
 
 static void TriggerBotRun()
 {
