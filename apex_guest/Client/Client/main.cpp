@@ -20,7 +20,6 @@ typedef struct player
 uint32_t check = 0xABBA;
 
 int aim_key = VK_XBUTTON1;
-int aim_key2 = VK_XBUTTON2;
 int shoot_key = VK_LBUTTON;
 bool use_nvidia = true;
 bool active = true;
@@ -35,7 +34,6 @@ bool aiming = false; //read
 uint64_t g_Base = 0; //write
 float max_dist = 400.0f * 40.0f; //read
 float smooth = 100.0f;
-float smooth_save = 100.0f;
 float max_fov = 15.0f;
 int bone = 2;
 bool thirdperson = false;

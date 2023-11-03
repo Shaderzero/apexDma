@@ -12,7 +12,7 @@
 Memory apex_mem;
 Memory client_mem;
 
-uint64_t add_off = 0x3f870;
+uint64_t add_off = 0x3f830;
 
 bool firing_range = false;
 bool active = true;
