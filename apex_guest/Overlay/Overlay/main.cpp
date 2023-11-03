@@ -6,6 +6,9 @@
 const MARGINS margins = { -1 ,-1, -1, -1 };
 const wchar_t g_szClassName[] = L"overlay";
 
+extern int screen_width;
+extern int screen_height;
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	WNDCLASSEX wc;
@@ -32,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		g_szClassName,
 		g_szClassName,
 		WS_POPUP | WS_VISIBLE,
-		0, 0, 3840, 2160,
+		0, 0, screen_width, screen_height,
 		NULL, NULL, hInstance, NULL);
 
 	SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 255, LWA_ALPHA);
