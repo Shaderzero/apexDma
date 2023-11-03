@@ -713,7 +713,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	const char* cl_proc = "razer.exe";
+	const char* cl_proc = "telegram.exe";
 	const char* ap_proc = "R5Apex.exe";
 	//const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
