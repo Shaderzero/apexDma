@@ -39,7 +39,7 @@
 
 #define OFFSET_ITEM_GLOW            0x02f0 //m_highlightFunctionBits
 
-#define OFFSET_GLOW_T1              0x262+ 0x30 //16256 = enabled, 0 = disabled 
-#define OFFSET_GLOW_T2              0x2dc+ 0x30 //1193322764 = enabled, 0 = disabled 
-#define OFFSET_GLOW_ENABLE          0x3c8+ 0x30 //7 = enabled, 2 = disabled
-#define OFFSET_GLOW_THROUGH_WALLS   0x3d0+ 0x30 //2 = enabled, 5 = disabled
+#define OFFSET_GLOW_T1              0x262 + 0x30 //16256 = enabled, 0 = disabled 
+#define OFFSET_GLOW_T2              0x2dc + 0x30 //1193322764 = enabled, 0 = disabled 
+#define OFFSET_GLOW_ENABLE          0x294 + 0x30 //7 = enabled, 2 = disabled
+#define OFFSET_GLOW_THROUGH_WALLS   0x278 + 0x30 //2 = enabled, 5 = disabled

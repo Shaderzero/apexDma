@@ -313,7 +313,7 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov)
 
 	if (zoom_fov != 0.0f && zoom_fov != 1.0f)
 	{
-		max_fov *= zoom_fov/110.0f;
+		max_fov *= zoom_fov/90.0f;
 	}
 
 	if (BulletSpeed > 1.f)
