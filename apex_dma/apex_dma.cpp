@@ -133,11 +133,6 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 			
 			Entity Target = getEntity(aimentity);
 			Entity LPlayer = getEntity(LocalPlayer);
-			
-			if(TriggerBot && IsInCrossHair(Target))
-			{
-				TriggerBotRun();
-			}
 		}
 	}
 	else
