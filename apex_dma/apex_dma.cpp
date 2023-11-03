@@ -90,6 +90,16 @@ bool isPressed(uint32_t button_code)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+static void TriggerBotRun()
+{
+	//testing
+	//apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
+	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
+	//printf("TriggerBotRun\n");
+}
 
 bool IsInCrossHair(Entity &target)
 {
@@ -372,17 +382,6 @@ void DoActions()
 // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 player players[toRead];
-
-static void TriggerBotRun()
-{
-	//testing
-	//apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
-	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
-	//printf("TriggerBotRun\n");
-}
 
 static void EspLoop()
 {
