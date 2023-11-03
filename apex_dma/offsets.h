@@ -37,7 +37,12 @@
 #define OFFSET_ZOOM_FOV             0x1600 + 0xb8 //m_playerData + m_curZoomFOV
 #define OFFSET_AMMO                 0x1584 //m_ammoInClip
 
+#define OFFSET_CROSSHAIR_LAST       OFFSET_VISIBLE_TIME + 0x8 //CPlayer!lastCrosshairTargetTime // CPlayer!lastVisibleTime + 0x8
+#define OFFSET_IN_ATTACK            0x07383af0 // in_attack
+
 #define OFFSET_ITEM_GLOW            0x02f0 //m_highlightFunctionBits
+#define OFFSET_HIGHLIGHTSERVERACTIVESTATES 0x298
+#define OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE OFFSET_GLOW_THROUGH_WALLS // Script_Highlight_SetVisibilityType 5th mov
 
 #define OFFSET_GLOW_T1              0x262 + 0x30 //16256 = enabled, 0 = disabled 
 #define OFFSET_GLOW_T2              0x2dc + 0x30 //1193322764 = enabled, 0 = disabled 

@@ -8,6 +8,7 @@
 #include <cfloat>
 #include "Game.h"
 #include <thread>
+#include <cstdlib>
 
 Memory apex_mem;
 Memory client_mem;
@@ -37,7 +38,10 @@ extern int bone;
 bool thirdperson = false;
 bool chargerifle = false;
 bool shooting = false;
+bool autoshoot = true;
+bool TriggerBot = false;
 
+bool TriggerBotRun_t = false;
 bool actions_t = false;
 bool esp_t = false;
 bool aim_t = false;
@@ -76,6 +80,13 @@ float lastvis_aim[toRead];
 
 int tmp_spec = 0, spectators = 0;
 int tmp_all_spec = 0, allied_spectators = 0;
+
+uint32_t button_state[4];
+int TriggerBotHotKey = 81;
+bool isPressed(uint32_t button_code)
+{
+	return (button_state[static_cast<uint32_t>(button_code) >> 5] & (1 << (static_cast<uint32_t>(button_code) & 0x1f))) != 0;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -122,6 +133,20 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 			if(aimentity==target.ptr)
 			{
 				aimentity=tmp_aimentity=lastaimentity=0;
+			}
+		}
+
+		if (aimentity != 0)
+		{
+			uint64_t LocalPlayer = 0;
+			apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
+			
+			Entity Target = getEntity(aimentity);
+			Entity LPlayer = getEntity(LocalPlayer);
+			
+			if(TriggerBot && IsInCrossHair(Target))
+			{
+				TriggerBotRun();
 			}
 		}
 	}
@@ -190,6 +215,15 @@ void DoActions()
 			{
 				continue;
 			}
+
+			if (isPressed(TriggerBotHotKey)) //Left and Right click
+				{
+					TriggerBot = true;
+				}
+				else
+				{
+					TriggerBot = false;
+				}
 
 			max = 999.0f;
 			tmp_aimentity = 0;
@@ -301,6 +335,53 @@ void DoActions()
 // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 player players[toRead];
+
+bool IsInCrossHair(Entity &target)
+{
+	static uintptr_t last_t = 0;
+	static float last_crosshair_target_time = -1.f;
+	float now_crosshair_target_time = target.lastCrossHairTime();
+	bool is_trigger = false;
+	if (last_t == target.ptr)
+	{
+		if(last_crosshair_target_time != -1.f)
+		{
+			if(now_crosshair_target_time > last_crosshair_target_time)
+			{
+				is_trigger = true;
+				//printf("Trigger\n");
+				last_crosshair_target_time = -1.f;
+			}
+			else
+			{
+				is_trigger = false;
+				last_crosshair_target_time = now_crosshair_target_time;
+			}
+		}
+		else
+		{
+			is_trigger = false;
+			last_crosshair_target_time = now_crosshair_target_time;
+		}
+	}
+	else
+	{
+		last_t = target.ptr;
+		last_crosshair_target_time = -1.f;
+	}
+	return is_trigger;
+}
+
+static void TriggerBotRun()
+{
+	//testing
+	//apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
+	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
+	//printf("TriggerBotRun\n");
+}
 
 static void EspLoop()
 {
@@ -724,6 +805,7 @@ int main(int argc, char *argv[])
 	std::thread actions_thr;
 	std::thread itemglow_thr;
 	std::thread vars_thr;
+	std::thread TriggerBotRun_thr;
 	while(active)
 	{
 		if(apex_mem.get_proc_status() != process_status::FOUND_READY)
@@ -734,12 +816,14 @@ int main(int argc, char *argv[])
 				esp_t = false;
 				actions_t = false;
 				item_t = false;
+				TriggerBotRun_t	= false;
 				g_Base = 0;
 
 				aimbot_thr.~thread();
 				esp_thr.~thread();
 				actions_thr.~thread();
 				itemglow_thr.~thread();
+				TriggerBotRun_thr.~thread();
 			}
 
 			std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -757,10 +841,12 @@ int main(int argc, char *argv[])
 				esp_thr = std::thread(EspLoop);
 				actions_thr = std::thread(DoActions);
 				itemglow_thr = std::thread(item_glow_t);
+				TriggerBotRun_thr = std::thread(TriggerBotRun);
 				aimbot_thr.detach();
 				esp_thr.detach();
 				actions_thr.detach();
 				itemglow_thr.detach();
+				TriggerBotRun_thr.detach();
 			}
 		}
 		else

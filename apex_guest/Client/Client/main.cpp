@@ -27,8 +27,8 @@ bool ready = false;
 extern visuals v;
 int aim = 0; //read
 bool esp = true; //read
-bool item_glow = true;
-bool player_glow = true;
+bool item_glow = false;
+bool player_glow = false;
 bool aim_no_recoil = true;
 bool aiming = false; //read
 uint64_t g_Base = 0; //write
