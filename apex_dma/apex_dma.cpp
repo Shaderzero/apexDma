@@ -12,6 +12,8 @@
 Memory apex_mem;
 Memory client_mem;
 
+uint64_t add_off = 0x3f870;
+
 bool firing_range = false;
 bool active = true;
 uintptr_t aimentity = 0;
@@ -585,8 +587,9 @@ static void set_vars(uint64_t add_addr)
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*18, chargerifle_addr);
 	uint64_t shooting_addr = 0;
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*19, shooting_addr);
+	uint64_t firing_range_addr = 0;
+	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*20, firing_range_addr);
 	
-
 	uint32_t check = 0;
 	client_mem.Read<uint32_t>(check_addr, check);
 	
@@ -626,6 +629,7 @@ static void set_vars(uint64_t add_addr)
 			client_mem.Read<bool>(thirdperson_addr, thirdperson);
 			client_mem.Read<bool>(shooting_addr, shooting);
 			client_mem.Read<bool>(chargerifle_addr, chargerifle);
+			client_mem.Read<bool>(firing_range_addr, firing_range);
 
 			if(esp && next)
 			{
@@ -712,9 +716,6 @@ int main(int argc, char *argv[])
 	const char* cl_proc = "razer.exe";
 	const char* ap_proc = "R5Apex.exe";
 	//const char* ap_proc = "EasyAntiCheat_launcher.exe";
-
-	//Client "add" offset
-	uint64_t add_off = 0x3f870;
 
 	std::thread aimbot_thr;
 	std::thread esp_thr;

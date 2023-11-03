@@ -15,6 +15,7 @@ extern bool thirdperson;
 extern int spectators;
 extern int allied_spectators;
 extern bool chargerifle;
+extern bool firing_range;
 
 int width;
 int height;
@@ -139,6 +140,7 @@ void Overlay::RenderMenu()
 			ImGui::Checkbox(XorStr("Glow players"), &player_glow);
 			ImGui::Checkbox(XorStr("Thirdperson"), &thirdperson);
 			ImGui::Checkbox(XorStr("Charge rifle hack"), &chargerifle);
+			ImGui::Checkbox(XorStr("Fire Range"), &firing_range);
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(XorStr("Config")))

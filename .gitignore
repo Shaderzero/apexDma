@@ -11,3 +11,4 @@ target/
 Cargo.lock
 *.so
 .vscode/
+apex_guest/Client/Client/Client.aps

@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		g_szClassName,
 		g_szClassName,
 		WS_POPUP | WS_VISIBLE,
-		0, 0, 5120, 1440,
+		0, 0, 3840, 2160,
 		NULL, NULL, hInstance, NULL);
 
 	SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 255, LWA_ALPHA);

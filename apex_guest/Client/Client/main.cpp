@@ -33,7 +33,7 @@ bool player_glow = true;
 bool aim_no_recoil = true;
 bool aiming = false; //read
 uint64_t g_Base = 0; //write
-float max_dist = 200.0f * 40.0f; //read
+float max_dist = 400.0f * 40.0f; //read
 float smooth = 100.0f;
 float smooth_save = 100.0f;
 float max_fov = 15.0f;
@@ -43,11 +43,12 @@ int spectators = 0; //write
 int allied_spectators = 0; //write
 bool chargerifle = false;
 bool shooting = false; //read
+bool firing_range = false;
 
 bool valid = false; //write
 bool next = false; //read write
 
-uint64_t add[20];
+uint64_t add[21];
 
 bool k_f5 = 0;
 bool k_f6 = 0;
@@ -146,6 +147,7 @@ int main(int argc, char** argv)
 	add[17] = (uintptr_t)&allied_spectators;
 	add[18] = (uintptr_t)&chargerifle;
 	add[19] = (uintptr_t)&shooting;
+	add[20] = (uintptr_t)&firing_range;
 
 
 	printf(XorStr("add offset: 0x%I64x\n"), (uint64_t)&add[0] - (uint64_t)GetModuleHandle(NULL));
@@ -235,12 +237,10 @@ int main(int argc, char** argv)
 
 		if (IsKeyDown(aim_key))
 		{
-			smooth = smooth_save;
 			aiming = true;
 		}
 		else if (IsKeyDown(aim_key2))
 		{
-			smooth = 50.0f;
 			aiming = true;
 		}
 		else
