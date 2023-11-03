@@ -313,23 +313,9 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov)
 
 	if (zoom_fov != 0.0f && zoom_fov != 1.0f)
 	{
-		max_fov *= zoom_fov/90.0f;
+		max_fov *= zoom_fov/110.0f;
 	}
 
-	/*
-	//simple aim prediction
-	if (BulletSpeed > 1.f)
-	{
-		Vector LocalBonePosition = from.getBonePosition(bone);
-		float VerticalTime = TargetBonePosition.DistTo(LocalBonePosition) / BulletSpeed;
-		TargetBonePosition.z += (BulletGrav * 0.5f) * (VerticalTime * VerticalTime);
-
-		float HorizontalTime = TargetBonePosition.DistTo(LocalBonePosition) / BulletSpeed;
-		TargetBonePosition += (target.getAbsVelocity() * HorizontalTime);
-	}
-	*/
-	
-	//more accurate prediction
 	if (BulletSpeed > 1.f)
 	{
 		PredictCtx Ctx;
@@ -337,7 +323,16 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov)
 		Ctx.TargetPos = TargetBonePosition; 
 		Ctx.BulletSpeed = BulletSpeed - (BulletSpeed*0.08);
 		Ctx.BulletGravity = BulletGrav + (BulletGrav*0.05);
-		Ctx.TargetVel = target.getAbsVelocity();
+		// Ctx.TargetVel = target.getAbsVelocity();
+
+		//new aim code
+		Vector targetVel = target.getAbsVelocity();
+		float deltaTime = 0.0083333; //1:framerate (i have 120fps locked)
+		float distanceToTarget = (TargetBonePosition - LocalCamera).Length();
+    	float timeToTarget = distanceToTarget / BulletSpeed;
+    	Vector targetPosAhead = TargetBonePosition + (targetVel * timeToTarget);
+    	Ctx.TargetVel = Vector(targetVel.x, targetVel.y + (targetVel.Length() * deltaTime), targetVel.z);
+    	Ctx.TargetPos = targetPosAhead;
 
 		if (BulletPredict(Ctx))
 			CalculatedAngles = QAngle{Ctx.AimAngles.x, Ctx.AimAngles.y, 0.f};
@@ -347,16 +342,17 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov)
     	CalculatedAngles = Math::CalcAngle(LocalCamera, TargetBonePosition);
 	QAngle ViewAngles = from.GetViewAngles();
 	QAngle SwayAngles = from.GetSwayAngles();
-	//remove sway and recoil
-	if(aim_no_recoil)
-		CalculatedAngles-=SwayAngles-ViewAngles;
-	Math::NormalizeAngles(CalculatedAngles);
-	QAngle Delta = CalculatedAngles - ViewAngles;
 	double fov = Math::GetFov(SwayAngles, CalculatedAngles);
 	if (fov > max_fov)
 	{
 		return QAngle(0, 0, 0);
 	}
+
+	//remove sway and recoil
+	if(aim_no_recoil)
+		CalculatedAngles-=SwayAngles-ViewAngles;
+	Math::NormalizeAngles(CalculatedAngles);
+	QAngle Delta = CalculatedAngles - ViewAngles;
 
 	Math::NormalizeAngles(Delta);
 
