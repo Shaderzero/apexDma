@@ -35,10 +35,9 @@ bool aiming = false;
 extern float smooth;
 extern int bone;
 bool thirdperson = false;
-bool chargerifle = false;
-bool shooting = false;
+bool triggerbot_enable = false;
+bool triggerbot_active = false;
 
-bool TriggerBotRun_t = false;
 bool actions_t = false;
 bool esp_t = false;
 bool aim_t = false;
@@ -79,6 +78,49 @@ int tmp_spec = 0, spectators = 0;
 int tmp_all_spec = 0, allied_spectators = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TriggerBotRun()
+{
+	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
+}
+
+bool IsInCrossHair(Entity &target)
+{
+	static uintptr_t last_t = 0;
+	static float last_crosshair_target_time = -1.f;
+	float now_crosshair_target_time = target.lastCrossHairTime();
+	bool is_trigger = false;
+	if (last_t == target.ptr)
+	{
+		if(last_crosshair_target_time != -1.f)
+		{
+			if(now_crosshair_target_time > last_crosshair_target_time)
+			{
+				is_trigger = true;
+				//printf("Trigger\n");
+				last_crosshair_target_time = -1.f;
+			}
+			else
+			{
+				is_trigger = false;
+				last_crosshair_target_time = now_crosshair_target_time;
+			}
+		}
+		else
+		{
+			is_trigger = false;
+			last_crosshair_target_time = now_crosshair_target_time;
+		}
+	}
+	else
+	{
+		last_t = target.ptr;
+		last_crosshair_target_time = -1.f;
+	}
+	return is_trigger;
+}
 
 void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int index)
 {
@@ -133,6 +175,11 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 			
 			Entity Target = getEntity(aimentity);
 			Entity LPlayer = getEntity(LocalPlayer);
+
+			if(triggerbot_active && IsInCrossHair(Target))
+			{
+				TriggerBotRun();
+			}
 		}
 	}
 	else
@@ -154,7 +201,6 @@ void DoActions()
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		bool tmp_thirdperson = false;
-		bool tmp_chargerifle = false;
 		uint32_t counter = 0;
 
 		while (g_Base!=0 && c_Base!=0)
@@ -290,25 +336,12 @@ void DoActions()
 			else
 				aimentity = lastaimentity;
 
-			if(chargerifle)
-			{
-				charge_rifle_hack(LocalPlayer);
-				tmp_chargerifle = true;
-			}
-			else
-			{
-				if(tmp_chargerifle)
-				{
-					apex_mem.Write<float>(g_Base + OFFSET_TIMESCALE + 0x68, 1.f);
-					tmp_chargerifle = false;
-				}
-			}
 		}
 	}
 	actions_t = false;
 }
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 player players[toRead];
 
@@ -595,10 +628,10 @@ static void set_vars(uint64_t add_addr)
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*16, spectators_addr);
 	uint64_t allied_spectators_addr = 0;
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*17, allied_spectators_addr);
-	uint64_t chargerifle_addr = 0;
-	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*18, chargerifle_addr);
-	uint64_t shooting_addr = 0;
-	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*19, shooting_addr);
+	uint64_t triggerbot_enable_addr = 0;
+	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*18, triggerbot_enable_addr);
+	uint64_t triggerbot_active_addr = 0;
+	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*19, triggerbot_active_addr);
 	uint64_t firing_range_addr = 0;
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*20, firing_range_addr);
 	
@@ -639,8 +672,8 @@ static void set_vars(uint64_t add_addr)
 			client_mem.Read<float>(max_fov_addr, max_fov);
 			client_mem.Read<int>(bone_addr, bone);
 			client_mem.Read<bool>(thirdperson_addr, thirdperson);
-			client_mem.Read<bool>(shooting_addr, shooting);
-			client_mem.Read<bool>(chargerifle_addr, chargerifle);
+			client_mem.Read<bool>(triggerbot_enable_addr, triggerbot_enable);
+			client_mem.Read<bool>(triggerbot_active_addr, triggerbot_active);
 			client_mem.Read<bool>(firing_range_addr, firing_range);
 
 			if(esp && next)

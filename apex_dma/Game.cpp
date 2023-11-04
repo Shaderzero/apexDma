@@ -39,23 +39,9 @@ void get_class_name(uint64_t entity_ptr, char* out_str)
 	apex_mem.ReadArray<char>(client_class.pNetworkName, out_str, 32);
 }
 
-void charge_rifle_hack(uint64_t entity_ptr)
+float Entity::lastCrossHairTime()
 {
-	extern uint64_t g_Base;
-	extern bool shooting;
-	WeaponXEntity curweap = WeaponXEntity();
-	curweap.update(entity_ptr);
-	float BulletSpeed = curweap.get_projectile_speed();
-	int ammo = curweap.get_ammo();
-
-	if (ammo != 0 && BulletSpeed == 1 && shooting)
-	{
-		apex_mem.Write<float>(g_Base + OFFSET_TIMESCALE + 0x68, std::numeric_limits<float>::min());
-	}
-	else
-	{
-		apex_mem.Write<float>(g_Base + OFFSET_TIMESCALE + 0x68, 1.f);
-	}
+	return *(float*)(buffer + OFFSET_CROSSHAIR_LAST);
 }
 
 int Entity::getTeamId()
@@ -329,7 +315,7 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov)
 
 		//new aim code
 		Vector targetVel = target.getAbsVelocity();
-		float deltaTime = 0.0083333; //1:framerate (i have 120fps locked)
+		float deltaTime = 0.0133333; //1:framerate (i have 120fps locked)
 		float distanceToTarget = (TargetBonePosition - LocalCamera).Length();
     	float timeToTarget = distanceToTarget / BulletSpeed;
     	Vector targetPosAhead = TargetBonePosition + (targetVel * timeToTarget);

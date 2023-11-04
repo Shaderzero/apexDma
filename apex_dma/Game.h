@@ -47,6 +47,7 @@ public:
 	Vector getBonePositionByHitbox(int id);
 	bool Observing(uint64_t entitylist);
 	void get_name(uint64_t g_Base, uint64_t index, char* name);
+	float lastCrossHairTime();
 };
 
 class Item
@@ -94,4 +95,3 @@ bool WorldToScreen(Vector from, float* m_vMatrix, int targetWidth, int targetHei
 float CalculateFov(Entity& from, Entity& target);
 QAngle CalculateBestBoneAim(Entity& from, uintptr_t target, float max_fov);
 void get_class_name(uint64_t entity_ptr, char* out_str);
-void charge_rifle_hack(uint64_t entity_ptr);
