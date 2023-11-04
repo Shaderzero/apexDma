@@ -175,11 +175,6 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 			
 			Entity Target = getEntity(aimentity);
 			Entity LPlayer = getEntity(LocalPlayer);
-
-			if(triggerbot_active && IsInCrossHair(Target))
-			{
-				TriggerBotRun();
-			}
 		}
 	}
 	else
@@ -191,6 +186,12 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 			tmp_aimentity = target.ptr;
 		}
 	}
+
+	if(triggerbot_active && IsInCrossHair(target))
+	{
+		TriggerBotRun();
+	}
+
 	lastvis_aim[index] = target.lastVisTime();
 }
 
