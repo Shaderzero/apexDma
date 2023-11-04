@@ -14,7 +14,7 @@ extern int bone;
 extern bool thirdperson;
 extern int spectators;
 extern int allied_spectators;
-extern bool chargerifle;
+extern bool triggerbot_enable;
 extern bool firing_range;
 
 int width;
@@ -139,7 +139,7 @@ void Overlay::RenderMenu()
 			ImGui::Checkbox(XorStr("Glow items"), &item_glow);
 			ImGui::Checkbox(XorStr("Glow players"), &player_glow);
 			ImGui::Checkbox(XorStr("Thirdperson"), &thirdperson);
-			ImGui::Checkbox(XorStr("Charge rifle hack"), &chargerifle);
+			ImGui::Checkbox(XorStr("TriggerBot"), &triggerbot_enable);
 			ImGui::Checkbox(XorStr("Fire Range"), &firing_range);
 			ImGui::EndTabItem();
 		}

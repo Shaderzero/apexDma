@@ -20,7 +20,7 @@ typedef struct player
 uint32_t check = 0xABBA;
 
 int aim_key = VK_XBUTTON1;
-int shoot_key = VK_LBUTTON;
+int triggerbot_key = VK_XBUTTON2;
 bool use_nvidia = true;
 bool active = true;
 bool ready = false;
@@ -39,8 +39,8 @@ int bone = 2;
 bool thirdperson = false;
 int spectators = 0; //write
 int allied_spectators = 0; //write
-bool chargerifle = false;
-bool shooting = false; //read
+bool triggerbot_enable = false;
+bool triggerbot_active = false; //read
 bool firing_range = false;
 
 bool valid = false; //write
@@ -143,8 +143,8 @@ int main(int argc, char** argv)
 	add[15] = (uintptr_t)&thirdperson;
 	add[16] = (uintptr_t)&spectators;
 	add[17] = (uintptr_t)&allied_spectators;
-	add[18] = (uintptr_t)&chargerifle;
-	add[19] = (uintptr_t)&shooting;
+	add[18] = (uintptr_t)&triggerbot_enable;
+	add[19] = (uintptr_t)&triggerbot_active;
 	add[20] = (uintptr_t)&firing_range;
 
 
@@ -237,19 +237,15 @@ int main(int argc, char** argv)
 		{
 			aiming = true;
 		}
-		else if (IsKeyDown(aim_key2))
-		{
-			aiming = true;
-		}
 		else
 		{
 			aiming = false;
 		}
 
-		if (IsKeyDown(shoot_key))
-			shooting = true;
+		if (IsKeyDown(triggerbot_key))
+			triggerbot_active = true;
 		else
-			shooting = false;
+			triggerbot_active = false;
 	}
 	ready = false;
 	ov1.Clear();
